@@ -1,0 +1,14 @@
+Title: Predicting Pyrogenic Carbon from Mid-Infrared Spectra
+Version: 0.1.0
+Authors@R: c(
+    person("Sam", "Leuthold", email = "sam.leuthold@colostate.edu",
+           role = c("aut", "cre")),
+    person("Michelle", "Haddix", email = "michelle.haddix@colostate.edu",
+           role = "aut"),
+    person("Francesca", "Cotrufo", email = "francesca.cotrufo@colostate.edu",
+           role = "aut")
+  )
+Description: Analysis scripts for predicting stable polycyclic aromatic carbon
+    (SPAC) concentration from FTIR spectra using HyPy measurements from soil
+    samples across the Colorado-Wyoming region.
+License: MIT + file LICENSE
