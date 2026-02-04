@@ -1,0 +1,76 @@
+#===============================================================================
+# Config: PyOM-MIR SPA-C Prediction
+# System: Sybil HPC (~80 cores, no scheduler)
+# Data:   404 soil samples, MIR FTIR spectra, response = SPA-C (g/kg C)
+#===============================================================================
+
+# Project metadata
+project:
+  name:    "PyOM-MIR SPA-C Spectroscopy ML Ensemble"
+  author:  "Sam Leuthold"
+  email:   "sam.leuthold@colostate.edu"
+  version: "1.0.0"
+
+# Paths (relative to working directory on Sybil)
+paths:
+  data:    "data/horizons_data.rds"
+  results: "results/"
+
+# Response variable
+response: "spac_g_kg_c"
+
+# Model configurations — full factorial grid
+models:
+  types:
+    - "rf"
+    - "cubist"
+    - "xgboost"
+    - "plsr"
+    - "elastic_net"
+    - "svm_rbf"
+    - "mars"
+
+  transformations:
+    - "none"
+    - "log"
+
+  preprocessing:
+    - "raw"
+    - "snv"
+    - "sg"
+    - "deriv1"
+    - "snv_deriv1"
+    - "snv_deriv2"
+
+  feature_selection:
+    - "none"
+    - "pca"
+    - "correlation"
+    - "cars"
+
+# Tuning parameters
+tuning:
+  cv_folds:      5
+  grid_size:     10
+  bayesian_iter: 15
+
+# Evaluation parameters
+evaluation:
+  metric:          "rpd"
+  prune:           TRUE
+  prune_threshold: 1.0
+  seed:            307
+
+# Validation parameters
+validation:
+  remove_outliers:    FALSE
+  spectral_method:    "mahalanobis"
+  spectral_threshold: 0.975
+  response_method:    "iqr"
+  response_threshold: 1.5
+
+# Compute settings for Sybil
+compute:
+  n_workers: 60
+  allow_par: TRUE
+  verbose:   TRUE
