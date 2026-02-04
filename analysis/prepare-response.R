@@ -114,6 +114,7 @@ df %>%
   dplyr::mutate(
     ftir_stem = ftir_1 %>%
       stringr::str_remove("-S[1-4].*$") %>%
+      stringr::str_remove("_Whole Soil$") %>%
       stringr::str_trim() %>%
       dplyr::if_else(. == "" | is.na(.), NA_character_, .)
   ) -> df
