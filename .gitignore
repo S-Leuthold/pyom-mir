@@ -11,18 +11,13 @@ renv/staging/
 renv/python/
 renv/sandbox/
 
-# Data (tracked separately, shared upon publication)
-data/raw/*
-data/processed/*
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-!data/README.md
+# Data, output, admin
+data/
+output/
+admin/
 
-# Output
-output/figures/*
-output/models/*
-!output/figures/.gitkeep
-!output/models/.gitkeep
+# Claude
+.claude/
 
 # OS
 .DS_Store
