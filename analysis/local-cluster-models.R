@@ -132,16 +132,19 @@ ggplot(pca_plot_data, aes(x     = PC1,
 
 ## Silhouette scores across k values ------------------------------------------
 
-tibble(k = 2:6, silhouette = sil_scores) -> sil_data
+tibble(k          = 2:6,
+       silhouette = sil_scores) -> sil_data
 
-ggplot(sil_data, aes(x = k, y = silhouette)) +
+ggplot(sil_data,
+       aes(x = k,
+           y = silhouette)) +
   geom_line() +
   geom_point(size = 3) +
-  geom_vline(xintercept = k_opt, linetype = "dashed", color = "red") +
-  labs(title = "Silhouette Score by k",
-       x = "k", y = "Average Silhouette Width") +
+  geom_vline(xintercept = k_opt,
+             linetype   = "dashed",
+             color      = "red") +
+  labs(x = "k", y = "Mean Silhouette Width") +
   theme_minimal()
-
 
 ## =============================================================================
 ## Step 7: Horizons subset helper
@@ -149,38 +152,46 @@ ggplot(sil_data, aes(x = k, y = silhouette)) +
 
 # horizons has no native subset method. Deep-copy object, filter analysis to
 # cluster sample IDs, and reset downstream slots.
-subset_horizons <- function(hd, sample_ids) {
-  hd_sub <- hd
-  hd_sub$data$analysis <- hd$data$analysis |>
-    filter(sample_id %in% sample_ids)
-  hd_sub$data$n_rows <- nrow(hd_sub$data$analysis)
-  hd_sub$config <- NULL
-  hd_sub$validation <- NULL
-  hd_sub$evaluation <- NULL
-  hd_sub$models <- NULL
-  hd_sub$ensemble <- NULL
-  hd_sub$artifacts <- NULL
-  hd_sub
-}
 
+subset_horizons <- function(hd, sample_ids) {
+
+  hd_sub <- hd
+
+  hd$data$analysis |>
+    filter(sample_id %in% sample_ids) -> hd_sub$data$analysis
+
+  hd_sub$data$n_rows <- nrow(hd_sub$data$analysis)
+  hd_sub$config      <- NULL
+  hd_sub$validation  <- NULL
+  hd_sub$evaluation  <- NULL
+  hd_sub$models      <- NULL
+  hd_sub$ensemble    <- NULL
+  hd_sub$artifacts   <- NULL
+
+  hd_sub
+
+  }
 
 ## =============================================================================
 ## Step 8: Per-cluster horizons pipeline
 ## =============================================================================
-##
-## Config grid per cluster (72 configs):
-##   3 models:            svm_rbf, cubist, elastic_net
-##   6 preprocessing:     raw, sg, snv, deriv1, snv_deriv1, deriv2
-##   2 transforms:        log, none
-##   2 feature selection: pca, correlation (boruta too slow for local runs)
-##
-## Deeper tuning: grid_size=20, bayesian_iter=15.
 
-# Work around horizons bug: sequential path never sets future::plan()
+# Config grid per cluster (72 configs):
+#   3 models:            svm_rbf, cubist, elastic_net
+#   6 preprocessing:     raw, sg, snv, deriv1, snv_deriv1, deriv2
+#   2 transforms:        log, none
+#   2 feature selection: pca, correlation (boruta too slow for local runs)
+#
+# Deeper tuning: grid_size=20, bayesian_iter=15.
+
+## Work around horizons bug: sequential path never sets future::plan() ---------
+
 future::plan(future::multisession, workers = 5)
 
 output_dir <- "output/local-clusters-k3"
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+
+## Run models ------------------------------------------------------------------
 
 cluster_results <- list()
 
@@ -192,8 +203,11 @@ for (cl in sort(unique(clusters))) {
 
   # FORCE excluded from cluster 3 — 16 samples with no PyC variance
   # (SD=0.006, range 0.072-0.096). Held out for external validation.
+
   if (cl == 3) {
+
     cl_data <- cl_data |> filter(project != "FORCE")
+
   }
 
   cl_ids <- cl_data |> pull(sample_id)
@@ -201,9 +215,11 @@ for (cl in sort(unique(clusters))) {
   n_resp <- sum(!is.na(hd_cl$data$analysis$pyc_abs))
 
   # Need enough samples for train/test + 5-fold CV
+
   if (n_resp < 50) {
+
     cluster_results[[cl]] <- tibble(cluster = cl, n = n_resp,
-                                    status = "skipped")
+                                    status  = "skipped")
     next
   }
 
@@ -258,6 +274,8 @@ for (cl in sort(unique(clusters))) {
 ## =============================================================================
 ## Step 9: Collate and compare to global
 ## =============================================================================
+
+## Kill the parallel backend ---------------------------------------------------
 
 future::plan("sequential")
 

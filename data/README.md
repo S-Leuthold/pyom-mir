@@ -7,24 +7,27 @@ Data are not included in this repository but will be made available upon publica
 ```
 data/
 ├── raw/
-│   └── [original datasets, untouched]
+│   ├── Engine_hypydata_Combined_2025_12_09.xlsx
+│   └── Final FTIR/  (1,696 OPUS files)
 └── processed/
-    └── [cleaned, joined, model-ready data]
+    ├── modeling_response.csv
+    └── horizons_data.rds
 ```
 
 ## Raw data
 
 | File | Description | Source |
 |------|-------------|--------|
-| `hypy_data.csv` | SPAC measurements (494 samples, 5 projects) | Michelle Haddix |
-| `ftir/*.0` | MIR spectra (1526 OPUS files) | CSU SoIL |
+| `Engine_hypydata_Combined_2025_12_09.xlsx` | HyPy SPAC measurements (436 samples, 7 projects) | Michelle Haddix |
+| `Final FTIR/*.0` | MIR spectra (1,696 OPUS files, multiple replicates per sample) | CSU SoIL |
 
 ## Processed data
 
 | File | Description |
 |------|-------------|
-| `modeling_data.rds` | Joined spectra + SPAC (365 samples after matching) |
+| `modeling_response.csv` | Cleaned response data with PyC concentrations (307 samples after QC) |
+| `horizons_data.rds` | Horizons data object with averaged spectra + joined response |
 
 ## Access
 
-[Instructions for obtaining data upon publication]
+Contact sam.leuthold@colostate.edu for data access prior to publication.
