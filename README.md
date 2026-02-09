@@ -26,7 +26,7 @@ prepare-data.R ──> local-cluster-models.R ──> build-figures.R
 | [`local-cluster-models.R`](analysis/local-cluster-models.R) | PCA clustering + per-cluster model evaluation | [manual](analysis/manuals/local-cluster-models.md) |
 | [`build-figures.R`](analysis/build-figures.R) | Generate all report figures | [manual](analysis/manuals/build-figures.md) |
 
-The `analysis/hpc/` directory contains scripts for running the global model evaluation on Sybil (CSU HPC).
+The `analysis/hpc/` directory contains scripts for running the global model evaluation on a Linux cluster.
 
 ## Directory structure
 
